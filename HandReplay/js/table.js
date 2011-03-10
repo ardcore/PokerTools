@@ -25,7 +25,6 @@ HandReplay.Table =  {
 
     init : function() {
         this.draw();
-        this.drawSeats();
     },
 
     draw : function() {
@@ -34,19 +33,60 @@ HandReplay.Table =  {
         canvasH = HandReplay.Facade.data.canvasH,
         helpers = HandReplay.CanvasHelpers;
 
-        helpers.drawOvalParam(canvasW/2, canvasH/2, 650, 350, 'rgba(47, 47, 46, 1)', 20, 'rgba(70, 99, 13, 0.8)');
-        helpers.drawChairs(6, 0, canvasW/2, canvasH/2, 750, 450, 'rgba(200, 0, 0, 1)', 10);
+        helpers.drawOval(canvasW/2, canvasH/2, 650, 350, 'rgba(47, 47, 46, 1)', 20, 'rgba(70, 99, 13, 0.8)');
+        this.drawSeats(10, 0, canvasW/2, canvasH/2, 650, 350, 35, 'rgba(47, 47, 46, 0.5)', 15, '#000');
 
-        HandReplay.Cards.create("Ad", 5, 5);
+        //HandReplay.Cards.create("Ad", 5, 5);
 
-
-    },
-
-    seats : function(amount) {
 
     },
 
-    drawSeats : function() {
+    seats : function() {
 
+    },
+
+    /**
+     * Puts n chairs regularly on the given ellipse- parametric style
+     * @co-author ForestierSimon (logic behind seat placing)
+     * @param int chairsAmount  number of chairs to be put
+     * @param float startAngle angle offset (in radians) used to set the first point position
+     * @param int cx            oval centre horizontal coordinate
+     * @param int cy            oval centre vertical coordinate
+     * @param int width         shape width
+     * @param int height        shape height
+     * @param string stroke     optional stroke style (rgba or hash)
+     * @param int strokesize    optional stroke size
+     * @param string fill       optional fill style (rgba or hash); fill will not be applied if undefined
+     */
+    drawSeats : function(amount, startAngle, cx, cy, width, height, radius, stroke, strokesize, fill) {
+        var ctx = HandReplay.Facade.data.context;
+        var i, a, b, x, y, twoPi, ang;
+
+        a = width / 2;
+        b = height / 2;
+        twoPi = Math.PI * 2;
+
+        for (i = 0; i <= amount; ++i) {
+            ang = startAngle + twoPi * i / amount;
+            x = a * Math.cos(ang);
+            y = b * Math.sin(ang);
+            
+            ctx.beginPath();
+            ctx.arc(cx + x, cy + y, radius, 0, twoPi, false);
+
+            if (typeof strokesize !== 'undefined') {
+                ctx.lineWidth = strokesize;
+            }
+
+            if (typeof stroke !== 'undefined') {
+                ctx.strokeStyle = stroke;
+            }
+            ctx.stroke();
+
+            if (typeof fill !== 'undefined') {
+                ctx.fillStyle = fill;
+                ctx.fill();
+            }
+        }
     }
 };
