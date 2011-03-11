@@ -33,12 +33,11 @@ HandReplay.Table =  {
         canvasH = HandReplay.Facade.data.canvasH,
         helpers = HandReplay.CanvasHelpers;
 
-        helpers.drawOval(canvasW/2, canvasH/2, 650, 350, 'rgba(47, 47, 46, 1)', 20, 'rgba(70, 99, 13, 0.8)');
-        this.drawSeats(10, 0, canvasW/2, canvasH/2, 650, 350, 35, 'rgba(47, 47, 46, 0.5)', 15, '#000');
+        //helpers.drawEllipse(canvasW/2, canvasH/2, 650, 350, 'rgba(47, 47, 46, 1)', 20, 'rgba(70, 99, 13, 0.8)');
+        //this.drawSeats(10, 0, canvasW/2, canvasH/2, 650, 350, 35, 'rgba(47, 47, 46, 0.5)', 15, '#000');
 
-        //HandReplay.Cards.create("Ad", 5, 5);
-
-
+        HandReplay.Cards.create("Ad", 5, 5);
+        HandReplay.Cards.create("Jd", 5, 100);
     },
 
     seats : function() {

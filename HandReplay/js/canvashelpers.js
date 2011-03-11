@@ -65,17 +65,17 @@ HandReplay.CanvasHelpers = {
     },
 
      /**
-     * Draw an oval shape - parametric style
+     * Draw an elliptical shape - parametric style
      * @author ForestierSimon
-     * @param int cx            oval centre horizontal coordinate
-     * @param int cy            oval centre vertical coordinate
+     * @param int cx            ellipse centre horizontal coordinate
+     * @param int cy            ellipse centre vertical coordinate
      * @param int width         shape width
      * @param int height        shape height
      * @param string stroke     optional stroke style (rgba or hash)
      * @param int strokesize    optional stroke size
      * @param string fill       optional fill style (rgba or hash); fill will not be applied if undefined
      */
-    drawOval : function(cx, cy, width, height, stroke, strokesize, fill) {
+    drawEllipse : function(cx, cy, width, height, stroke, strokesize, fill) {
         var ctx = HandReplay.Facade.data.context;
         var alpha, a, b, x, y, twoPi, steps;
 

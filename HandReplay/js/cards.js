@@ -24,10 +24,10 @@
 HandReplay.Cards = {
 
     create : function(name, x, y) {
-        return new this.Card(name).draw(x, y);
+        return new this.Card(name, x, y).init();
     },
 
-    Card : function(name) {
+    Card : function(name, x, y) {
 
         var suits = {
             h : '♥',
@@ -40,31 +40,62 @@ HandReplay.Cards = {
         height = 70,
         font = '18px serif',
         shapefont = '40px serif',
-        radius = 3;
+        radius = 3,
+        helpers = HandReplay.CanvasHelpers,
+        ctx = HandReplay.Facade.data.context,
+        self = this;
 
-        var helpers = HandReplay.CanvasHelpers;
-        var ctx = HandReplay.Facade.data.context;
+        // public members
+        Object.defineProperties(this, {
+            x : {
+                value : x
+            },
 
-        this.draw = function(x, y) {
+            y : {
+                value : y
+            },
+
+            fps : {
+                value : 60
+            },
+
+            interval : {
+                value : 1000 //ms
+            },
+
+            fill : {
+                value : {
+                    r : 0,
+                    g : 0,
+                    b : 0,
+                    a : 1,
+                    toString: function() {
+                        return "rgba(" + this.r + "," + this.g + "," + this.b + "," + this.a + ")";
+                    }
+                }
+
+            }
+        })
+
+        this.draw = function() {
             var details = this.parseCardName(name);
             var fontcolour = (details.suit === 's' || details.suit === 'c') ? 'Black' : 'Red';
+            ctx.clearRect(this.x, this.y, this.x + width, this.y + height);
 
-            ctx.clearRect(x, y, x + width, y + height);
-
-            helpers.drawShadow(1, 1, 1, '#000');
-            helpers.drawRoundedRectangle(x, y, width, height, radius, '#000', 1, '#fff');
+            helpers.drawShadow(1, 1, 1, this.fill.toString());
+            helpers.drawRoundedRectangle(this.x, this.y, width, height, radius, '#000', 1, this.fill.toString());
             // shadow reset
-            helpers.drawShadow(0, 0, 0, '#000');
+            helpers.drawShadow(0, 0, 0, this.fill.toString());
 
             ctx.beginPath();
-            ctx.moveTo(x + width, y + height/4);
-            ctx.lineTo(x + width/3, y + height/4);
-            ctx.lineTo(x + width/3, y + height);
+            ctx.moveTo(this.x + width, this.y + height/4);
+            ctx.lineTo(this.x + width/3, this.y + height/4);
+            ctx.lineTo(this.x + width/3, this.y + height);
             ctx.stroke();
 
-            helpers.drawText(x + width/6, y + height/8, details.label, font, fontcolour, 'middle', 'center');
-            helpers.drawText(x + width/6, y + height/3, suits[details.suit], font, fontcolour, 'middle', 'center');
-            helpers.drawText(width - width/3 + x, height - height/2.5 + y, suits[details.suit], shapefont, fontcolour, 'middle', 'center');
+            helpers.drawText(this.x + width/6, this.y + height/8, details.label, font, fontcolour, 'middle', 'center');
+            helpers.drawText(this.x + width/6, this.y + height/3, suits[details.suit], font, fontcolour, 'middle', 'center');
+            helpers.drawText(width - width/3 + this.x, height - height/2.5 + this.y, suits[details.suit], shapefont, fontcolour, 'middle', 'center');
         }
 
         this.parseCardName = function(name) {
@@ -72,6 +103,20 @@ HandReplay.Cards = {
                 suit : name.charAt(name.length-1),
                 label : name.substring(0, name.length-1)
             }
+        }
+
+        this.fadeIn = function() {
+
+            if (self.fill.r <= 255) {
+                console.log(self.fill.toString());
+                self.draw();
+                self.fill.r = self.fill.g = self.fill.b += 5;
+            }
+        }
+
+        this.init = function() {
+            //this.fadeIn();
+           setInterval(this.fadeIn, this.interval/this.fps);
         }
     }
 };
