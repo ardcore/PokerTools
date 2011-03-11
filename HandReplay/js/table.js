@@ -33,40 +33,90 @@ HandReplay.Table =  {
         canvasH = HandReplay.Facade.data.canvasH,
         helpers = HandReplay.CanvasHelpers;
 
-        //helpers.drawEllipse(canvasW/2, canvasH/2, 650, 350, 'rgba(47, 47, 46, 1)', 20, 'rgba(70, 99, 13, 0.8)');
-        //this.drawSeats(10, 0, canvasW/2, canvasH/2, 650, 350, 35, 'rgba(47, 47, 46, 0.5)', 15, '#000');
+        helpers.drawEllipse(canvasW/2, canvasH/2, this.width, this.height, 'rgba(47, 47, 46, 1)', 20, 'rgba(70, 99, 13, 0.8)');
+        this.drawSeats(0, canvasW/2, canvasH/2, 35, 'rgba(47, 47, 46, 0.5)', 15, '#000');
+        this.dealCards(0);
 
-        HandReplay.Cards.create("Ad", 5, 5);
-        HandReplay.Cards.create("Jd", 5, 100);
+        //HandReplay.Cards.create("Ad", 5, 5);
+        //HandReplay.Cards.create("Jd", 5, 100);
     },
 
-    seats : function() {
+    players : function() {
+        var players;
 
+        // test purposes only - this will be extracted from hand history
+        players = {
+            1 : {
+                cards : {
+                    1 : 'Ad',
+                    2 : 'Ks'
+                }
+            },
+
+            2 : {
+                cards : {
+                    1 : '2s',
+                    2 : '2c'
+                }
+            },
+
+            6 : {
+                cards : {
+                    1 : 'Js',
+                    2 : '5h'
+                }
+            },
+
+            10 : {
+                cards : {
+                    1 : '10s',
+                    2 : '10c'
+                }
+            }
+        }
+
+        return players;
+    },
+
+    dealCards : function(startAngle, cx, cy) {
+        var i, ang, twoPi, a, b, x, y,
+        players = this.players();
+
+        a = this.width / 2;
+        b = this.height / 2;
+        twoPi = Math.PI * 2;
+
+        for (i = 1; i <= this.seats; ++i) {
+            if (players.hasOwnProperty(i)) {
+                ang = startAngle + twoPi * i / this.seats;
+                x = a * Math.cos(ang);
+                y = b * Math.sin(ang);
+                HandReplay.Cards.create(players[i].cards[1], HandReplay.Facade.data.canvasW/2 + x - 30, HandReplay.Facade.data.canvasH/2 + y - 40);
+                HandReplay.Cards.create(players[i].cards[2], HandReplay.Facade.data.canvasW/2 + x - 15, HandReplay.Facade.data.canvasH/2 + y - 35);
+            }
+        }
     },
 
     /**
      * Puts n chairs regularly on the given ellipse- parametric style
      * @co-author ForestierSimon (logic behind seat placing)
-     * @param int chairsAmount  number of chairs to be put
      * @param float startAngle angle offset (in radians) used to set the first point position
-     * @param int cx            oval centre horizontal coordinate
-     * @param int cy            oval centre vertical coordinate
-     * @param int width         shape width
-     * @param int height        shape height
+     * @param int cx            table centre horizontal coordinate
+     * @param int cy            table centre vertical coordinate
      * @param string stroke     optional stroke style (rgba or hash)
      * @param int strokesize    optional stroke size
      * @param string fill       optional fill style (rgba or hash); fill will not be applied if undefined
      */
-    drawSeats : function(amount, startAngle, cx, cy, width, height, radius, stroke, strokesize, fill) {
+    drawSeats : function(startAngle, cx, cy, radius, stroke, strokesize, fill) {
         var ctx = HandReplay.Facade.data.context;
         var i, a, b, x, y, twoPi, ang;
 
-        a = width / 2;
-        b = height / 2;
+        a = this.width / 2;
+        b = this.height / 2;
         twoPi = Math.PI * 2;
 
-        for (i = 0; i <= amount; ++i) {
-            ang = startAngle + twoPi * i / amount;
+        for (i = 1; i <= this.seats; ++i) {
+            ang = startAngle + twoPi * i / this.seats;
             x = a * Math.cos(ang);
             y = b * Math.sin(ang);
             
@@ -89,3 +139,17 @@ HandReplay.Table =  {
         }
     }
 };
+
+Object.defineProperties(HandReplay.Table, {
+    seats : {
+        value : 10
+    },
+
+    width : {
+        value : 650
+    },
+
+    height : {
+        value : 350
+    }
+});

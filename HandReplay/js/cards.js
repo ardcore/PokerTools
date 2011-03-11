@@ -24,7 +24,8 @@
 HandReplay.Cards = {
 
     create : function(name, x, y) {
-        return new this.Card(name, x, y).init();
+        var self = this;
+        return new self.Card(name, x, y).init();
     },
 
     Card : function(name, x, y) {
@@ -38,6 +39,7 @@ HandReplay.Cards = {
 
         var width = 50,
         height = 70,
+        fadeInterval = null,
         font = '18px serif',
         shapefont = '40px serif',
         radius = 3,
@@ -75,17 +77,14 @@ HandReplay.Cards = {
                 }
 
             }
-        })
+        });
 
         this.draw = function() {
             var details = this.parseCardName(name);
             var fontcolour = (details.suit === 's' || details.suit === 'c') ? 'Black' : 'Red';
-            ctx.clearRect(this.x, this.y, this.x + width, this.y + height);
 
-            helpers.drawShadow(1, 1, 1, this.fill.toString());
+            ctx.clearRect(this.x, this.y, width, height);
             helpers.drawRoundedRectangle(this.x, this.y, width, height, radius, '#000', 1, this.fill.toString());
-            // shadow reset
-            helpers.drawShadow(0, 0, 0, this.fill.toString());
 
             ctx.beginPath();
             ctx.moveTo(this.x + width, this.y + height/4);
@@ -106,17 +105,19 @@ HandReplay.Cards = {
         }
 
         this.fadeIn = function() {
-
+            
             if (self.fill.r <= 255) {
-                console.log(self.fill.toString());
                 self.draw();
                 self.fill.r = self.fill.g = self.fill.b += 5;
+            } else {
+                clearInterval(self.fadeInterval);
             }
         }
 
         this.init = function() {
             //this.fadeIn();
-           setInterval(this.fadeIn, this.interval/this.fps);
+           this.fadeInterval = setInterval(this.fadeIn, this.interval/this.fps);
+
         }
     }
 };
