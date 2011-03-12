@@ -79,20 +79,26 @@ HandReplay.Table =  {
     },
 
     dealCards : function(startAngle, cx, cy) {
-        var i, ang, twoPi, a, b, x, y,
+        var i, ang, twoPi, a, b, counter;
         players = this.players();
 
         a = this.width / 2;
         b = this.height / 2;
         twoPi = Math.PI * 2;
 
-        for (i = 1; i <= this.seats; ++i) {
+        for (i = 1, counter = 0; i <= this.seats; ++i) {
             if (players.hasOwnProperty(i)) {
-                ang = startAngle + twoPi * i / this.seats;
-                x = a * Math.cos(ang);
-                y = b * Math.sin(ang);
-                HandReplay.Cards.create(players[i].cards[1], HandReplay.Facade.data.canvasW/2 + x - 30, HandReplay.Facade.data.canvasH/2 + y - 40);
-                HandReplay.Cards.create(players[i].cards[2], HandReplay.Facade.data.canvasW/2 + x - 15, HandReplay.Facade.data.canvasH/2 + y - 35);
+                (function(i, seats) {
+	                var x, y;
+	                setTimeout( function() {
+		                ang = startAngle + twoPi * i / seats;
+		                x = a * Math.cos(ang);
+		                y = b * Math.sin(ang);
+		                HandReplay.Cards.create(players[i].cards[1], HandReplay.Facade.data.canvasW/2 + x - 30, HandReplay.Facade.data.canvasH/2 + y - 40);
+                        HandReplay.Cards.create(players[i].cards[2], HandReplay.Facade.data.canvasW/2 + x - 15, HandReplay.Facade.data.canvasH/2 + y - 35);
+                    }, counter*1000);
+	                counter++;
+                })(i, this.seats)
             }
         }
     },
